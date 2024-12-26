@@ -1,12 +1,15 @@
+import GraphArea from "@/components/GraphArea";
+import SignalList from "@/components/SignalList";
+import Toolbar from "@/components/ToolBar";
+
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        ads
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        asd
-      </footer>
-    </div>
+    <main className="min-h-screen flex flex-col">
+      <Toolbar />
+      <div className="flex-grow flex flex-col md:flex-row">
+        <SignalList />
+        <GraphArea />
+      </div>
+    </main>
   );
 }

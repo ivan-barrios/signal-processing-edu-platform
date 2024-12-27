@@ -4,13 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   DndContext,
   closestCenter,
   KeyboardSensor,
@@ -27,6 +20,9 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { GripVertical } from "lucide-react";
+import EditButton from "./EditButton";
+import DeleteButton from "./DeleteButton";
 
 interface Signal {
   id: string;
@@ -35,7 +31,15 @@ interface Signal {
   amplitude?: number;
 }
 
-function SortableSignal({ signal }: { signal: Signal }) {
+function SortableSignal({
+  signal,
+  onUpdate,
+  onDelete,
+}: {
+  signal: Signal;
+  onUpdate: (updatedSignal: Signal) => void;
+  onDelete: (signalId: string) => void;
+}) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: signal.id });
 
@@ -48,53 +52,25 @@ function SortableSignal({ signal }: { signal: Signal }) {
     <li
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
-      className="bg-white p-2 rounded shadow flex justify-between items-center mb-2 cursor-move"
+      className="bg-white p-2 rounded shadow flex items-center mb-2"
     >
-      <span>{signal.function}</span>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="sm">
-            Edit
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Signal</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <Input
-              defaultValue={signal.function}
-              placeholder="Signal function"
-            />
-            <Input
-              type="number"
-              defaultValue={signal.frequency}
-              placeholder="Frequency"
-            />
-            <Input
-              type="number"
-              defaultValue={signal.amplitude}
-              placeholder="Amplitude"
-            />
-          </div>
-          <Button
-            onClick={() => {
-              // Here you would typically update the signal in your state
-              console.log("Updated signal:", signal);
-            }}
-          >
-            Save Changes
-          </Button>
-        </DialogContent>
-      </Dialog>
+      <div {...attributes} {...listeners} className="cursor-move mr-2">
+        <GripVertical size={20} />
+      </div>
+      <span className="flex-grow">{signal.function}</span>
+      <EditButton signal={signal} onUpdate={onUpdate} />
+      <DeleteButton signal={signal} onDelete={onDelete} />
     </li>
   );
 }
 
-export default function SignalList() {
-  const [signals, setSignals] = useState<Signal[]>([]);
+export default function SignalList({
+  signals,
+  setSignals,
+}: {
+  signals: Signal[];
+  setSignals: (signals: Signal[]) => void;
+}) {
   const [newSignal, setNewSignal] = useState("");
 
   const sensors = useSensors(
@@ -118,13 +94,27 @@ export default function SignalList() {
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      setSignals((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over?.id);
+      const oldIndex = signals.findIndex(
+        (item: Signal) => item.id === active.id
+      );
+      const newIndex = signals.findIndex(
+        (item: Signal) => item.id === over?.id
+      );
 
-        return arrayMove(items, oldIndex, newIndex);
-      });
+      setSignals(arrayMove(signals, oldIndex, newIndex));
     }
+  };
+
+  const updateSignal = (updatedSignal: Signal) => {
+    setSignals(
+      signals.map((signal) =>
+        signal.id === updatedSignal.id ? updatedSignal : signal
+      )
+    );
+  };
+
+  const deleteSignal = (deletedSignalId: string) => {
+    setSignals(signals.filter((signal) => signal.id !== deletedSignalId));
   };
 
   return (
@@ -148,7 +138,12 @@ export default function SignalList() {
         <SortableContext items={signals} strategy={verticalListSortingStrategy}>
           <ul className="space-y-2">
             {signals.map((signal) => (
-              <SortableSignal key={signal.id} signal={signal} />
+              <SortableSignal
+                key={signal.id}
+                signal={signal}
+                onUpdate={updateSignal}
+                onDelete={deleteSignal}
+              />
             ))}
           </ul>
         </SortableContext>

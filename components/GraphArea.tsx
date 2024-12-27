@@ -99,3 +99,5 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions }) => {
 };
 
 export default GraphArea;
+
+const rect = (t: number, width = 1) => (Math.abs(t) <= width / 2 ? 1 : 0);

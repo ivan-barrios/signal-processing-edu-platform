@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Signal Processing Educational Platform
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This project is a web-based **Signal Processing Educational Platform** designed to help users understand and interact with key concepts in signal processing. It provides an intuitive interface to create, modify, and visualize signals, enabling users to explore how different filters and transformations affect signals in both the time and frequency domains. This platform serves as an educational tool for students, engineers, and enthusiasts who want to deepen their understanding of signal processing principles.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. **Interactive Signal Visualization**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Graph signals dynamically in the time and frequency domains.
+- Modify signal parameters (e.g., amplitude, frequency) and observe changes in real time.
 
-## Learn More
+### 2. **Toolset for Signal Analysis**
 
-To learn more about Next.js, take a look at the following resources:
+- Toggle between time-domain and frequency-domain views.
+- Zoom, pan, and interact with signal plots.
+- Compute key properties such as:
+  - Signal power.
+  - Mean value.
+  - Signal energy.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. **Custom Signal Input**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Input mathematical functions to define custom signals.
+- Support for predefined and user-defined signal types, such as:
+  - Rectangular functions (e.g., `rect`)
+  - Triangular functions (e.g., `tri`)
+  - Sinc functions (e.g., `sinc`)
+  - Heaviside step functions, and more.
 
-## Deploy on Vercel
+### 4. **Filter Application**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Apply common signal processing filters (low-pass, high-pass, band-pass, etc.).
+- Design and implement custom filters for advanced users.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 5. **Educational Support**
+
+- Includes an integrated chatbot that answers questions about signal processing concepts, applications, and mathematical foundations.
+- Provides explanations for transformations, filters, and properties in an easy-to-understand format.
+
+---
+
+## Goals and Objectives
+
+### **What We Aim For:**
+
+1. **Educational Excellence:**
+
+   - Build a platform that demystifies complex signal processing concepts through visualization and interaction.
+   - Make it accessible for beginners while providing depth for advanced users.
+
+2. **Interactive Learning:**
+
+   - Create an engaging and user-friendly interface where users can experiment with real-world signals and their transformations.
+
+3. **Customizability:**
+
+   - Allow users to define custom signals and filters, giving them the flexibility to explore beyond predefined options.
+
+4. **Real-Time Feedback:**
+
+   - Enable immediate visualization of how modifications to signals and filters impact their properties, fostering deeper understanding.
+
+---
+
+## Contributing
+
+Contributions are welcome! Feel free to submit a pull request or open an issue if you have suggestions, bugs to report, or features to add.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

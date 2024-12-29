@@ -13,8 +13,6 @@ import { Trash2 } from "lucide-react";
 interface Signal {
   id: string;
   function: string;
-  frequency?: number;
-  amplitude?: number;
 }
 
 const DeleteButton = ({

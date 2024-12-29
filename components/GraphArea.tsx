@@ -11,8 +11,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { evaluate } from "mathjs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import math from "@/utils/customMath";
 
 interface GraphAreaProps {
   functions: string[];
@@ -34,14 +34,13 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions }) => {
       functions.forEach((func, index) => {
         try {
           const scope = { t };
-          point[`y${index}`] = evaluate(func, scope);
+          point[`y${index}`] = math.evaluate(func, scope);
         } catch {
           setError(`Error evaluating function: ${func}`);
         }
       });
       return point;
     });
-
     setChartData(data);
   };
 
@@ -87,6 +86,7 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions }) => {
                 type="monotone"
                 dataKey={`y${index}`}
                 stroke={colors[index % colors.length]}
+                strokeWidth={2}
                 name={func}
                 dot={false}
               />
@@ -99,5 +99,3 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions }) => {
 };
 
 export default GraphArea;
-
-const rect = (t: number, width = 1) => (Math.abs(t) <= width / 2 ? 1 : 0);

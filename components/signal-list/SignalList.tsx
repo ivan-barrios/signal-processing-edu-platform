@@ -27,8 +27,6 @@ import DeleteButton from "./DeleteButton";
 interface Signal {
   id: string;
   function: string;
-  frequency?: number;
-  amplitude?: number;
 }
 
 function SortableSignal({

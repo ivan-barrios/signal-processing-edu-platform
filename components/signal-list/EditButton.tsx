@@ -12,8 +12,6 @@ import { Input } from "../ui/input";
 interface Signal {
   id: string;
   function: string;
-  frequency?: number;
-  amplitude?: number;
 }
 
 const EditButton = ({
@@ -44,28 +42,6 @@ const EditButton = ({
               setEditedSignal({ ...editedSignal, function: e.target.value })
             }
             placeholder="Signal function"
-          />
-          <Input
-            type="number"
-            value={editedSignal.frequency || ""}
-            onChange={(e) =>
-              setEditedSignal({
-                ...editedSignal,
-                frequency: parseFloat(e.target.value) || undefined,
-              })
-            }
-            placeholder="Frequency"
-          />
-          <Input
-            type="number"
-            value={editedSignal.amplitude || ""}
-            onChange={(e) =>
-              setEditedSignal({
-                ...editedSignal,
-                amplitude: parseFloat(e.target.value) || undefined,
-              })
-            }
-            placeholder="Amplitude"
           />
         </div>
         <Button

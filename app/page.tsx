@@ -7,8 +7,6 @@ import { useState } from "react";
 interface Signal {
   id: string;
   function: string;
-  frequency?: number;
-  amplitude?: number;
 }
 
 export default function Home() {

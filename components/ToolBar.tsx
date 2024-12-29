@@ -29,7 +29,7 @@ export default function Toolbar() {
             {domain === "frequency" ? "Frequency Domain" : "Time Domain"}
           </Toggle>
 
-          <Tooltip>
+          {/* <Tooltip>
             <TooltipTrigger asChild>
               <Button size="icon" variant="outline" aria-label="Zoom in">
                 <ZoomIn className="h-4 w-4" />
@@ -49,9 +49,9 @@ export default function Toolbar() {
             <TooltipContent>
               <p>Zoom Out</p>
             </TooltipContent>
-          </Tooltip>
+          </Tooltip> */}
 
-          <Tooltip>
+          {/* <Tooltip>
             <TooltipTrigger asChild>
               <Toggle
                 pressed={isDragging}
@@ -64,7 +64,7 @@ export default function Toolbar() {
             <TooltipContent>
               <p>Enable/Disable Dragging</p>
             </TooltipContent>
-          </Tooltip>
+          </Tooltip> */}
         </div>
         <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
           <Tooltip>

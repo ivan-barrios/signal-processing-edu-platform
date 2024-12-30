@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+
 import { Toggle } from "@/components/ui/toggle";
 import {
   Tooltip,
@@ -9,11 +9,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Zap } from "lucide-react";
+import { CalculateModal } from "./CalculateModal";
 
-export default function Toolbar() {
+interface Signal {
+  id: string;
+  function: string;
+}
+
+export default function Toolbar({ signals }: { signals: Signal[] }) {
   const [domain, setDomain] = useState<"frequency" | "time">("time");
-  // const [isDragging, setIsDragging] = useState(false);
 
   return (
     <TooltipProvider>
@@ -28,54 +32,11 @@ export default function Toolbar() {
           >
             {domain === "frequency" ? "Frequency Domain" : "Time Domain"}
           </Toggle>
-
-          {/* <Tooltip>
-            <TooltipTrigger asChild>
-              <Button size="icon" variant="outline" aria-label="Zoom in">
-                <ZoomIn className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Zoom In</p>
-            </TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button size="icon" variant="outline" aria-label="Zoom out">
-                <ZoomOut className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Zoom Out</p>
-            </TooltipContent>
-          </Tooltip> */}
-
-          {/* <Tooltip>
-            <TooltipTrigger asChild>
-              <Toggle
-                pressed={isDragging}
-                onPressedChange={setIsDragging}
-                aria-label="Toggle dragging"
-              >
-                <Move className="h-4 w-4" />
-              </Toggle>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Enable/Disable Dragging</p>
-            </TooltipContent>
-          </Tooltip> */}
         </div>
-        <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
+        <div className="flex flex-wrap gap-4 items-center justify-center md:justify-start">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="outline"
-                aria-label="Calculate power"
-              >
-                Px
-              </Button>
+              <CalculateModal whatToCalc="Px" signals={signals} />
             </TooltipTrigger>
             <TooltipContent>
               <p>Calculate Power</p>
@@ -84,9 +45,7 @@ export default function Toolbar() {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button size="icon" variant="outline" aria-label="Calculate mean">
-                x&#772;
-              </Button>
+              <CalculateModal whatToCalc="x&#772;" signals={signals} />
             </TooltipTrigger>
             <TooltipContent>
               <p>Calculate Mean</p>
@@ -95,13 +54,7 @@ export default function Toolbar() {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="outline"
-                aria-label="Calculate energy"
-              >
-                <Zap className="h-4 w-4" />
-              </Button>
+              <CalculateModal whatToCalc="Ex" signals={signals} />
             </TooltipTrigger>
             <TooltipContent>
               <p>Calculate Energy</p>

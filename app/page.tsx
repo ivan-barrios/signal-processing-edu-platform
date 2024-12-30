@@ -13,7 +13,7 @@ export default function Home() {
   const [signals, setSignals] = useState<Signal[]>([]);
   return (
     <main className="min-h-screen flex flex-col">
-      <Toolbar />
+      <Toolbar signals={signals} />
       <div className="flex-grow flex flex-col md:flex-row">
         <SignalList signals={signals} setSignals={setSignals} />
         <GraphArea functions={signals.map((signal) => signal.function)} />

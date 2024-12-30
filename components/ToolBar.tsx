@@ -9,11 +9,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ZoomIn, ZoomOut, Move, Zap } from "lucide-react";
+import { Zap } from "lucide-react";
 
 export default function Toolbar() {
   const [domain, setDomain] = useState<"frequency" | "time">("time");
-  const [isDragging, setIsDragging] = useState(false);
+  // const [isDragging, setIsDragging] = useState(false);
 
   return (
     <TooltipProvider>

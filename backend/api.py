@@ -1,9 +1,18 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sympy import symbols, periodicity, Interval, solveset, S, sin, cos, exp, integrate, oo, limit, log, sinc, Heaviside, Piecewise, Abs, Or, Union
-from sympy.utilities.lambdify import lambdify
-import numpy as np
+from pydantic import BaseModel
 
 app = FastAPI()
+
+# Add CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Allow your Next.js frontend
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 # Define the symbolic variable
 t = symbols("t")
@@ -16,7 +25,6 @@ def rect(t, width=1):
 def is_function_convergent(func):
     """Check if the function decays to 0 as t -> ±∞"""
     try:
-        
         # Handle Piecewise functions explicitly
         if isinstance(func, Piecewise):
             # Extract nonzero conditions from the Piecewise function
@@ -42,16 +50,19 @@ def is_function_convergent(func):
             else:
                 return False  # Unsupported type of support
 
-
-        # Limit of the function as t -> ±∞
+        # General case: Check limits for non-Piecewise functions
         limit_pos = limit(func, t, oo)
         limit_neg = limit(func, t, -oo)
         return limit_pos == 0 and limit_neg == 0
     except Exception:
         return False
 
+# Define the request schema using Pydantic
+class CalculateMetricsRequest(BaseModel):
+    func_str: str
+
 @app.post("/calculate-metrics")
-async def calculate_metrics(func_str: str):
+async def calculate_metrics(request: CalculateMetricsRequest):
     """
     Calculate power, energy, and mean of a given function string.
     Automatically handles periodicity, infinite ranges, and special cases.
@@ -59,7 +70,11 @@ async def calculate_metrics(func_str: str):
     try:
         # Parse the function into a SymPy expression
         try:
-            func = eval(func_str, {"sin": sin, "cos": cos, "exp": exp, "log": log, "t": t, "sinc": sinc, "u": Heaviside, "rect": rect})
+            # Safely evaluate the function string using allowed symbols
+            func = eval(request.func_str, {
+                "sin": sin, "cos": cos, "exp": exp, "log": log,
+                "t": t, "sinc": sinc, "u": Heaviside, "rect": rect
+            })
         except Exception as e:
             return {"error": f"Invalid function string: {str(e)}"}
 
@@ -90,12 +105,9 @@ async def calculate_metrics(func_str: str):
                     energy = integrate(func**2, (t, -oo, oo))
                     energy = float(energy.evalf())
 
-                    # Compute power and mean over [-∞, ∞]
-                    power = integrate(func**2, (t, -oo, oo)) / (2 * oo)
-                    mean = integrate(func, (t, -oo, oo)) / (2 * oo)
-                    
-                    power = float(power.evalf())
-                    mean = float(mean.evalf())
+                    # Power and mean are undefined for non-periodic, finite energy functions
+                    power = "undefined (non-periodic)"
+                    mean = "undefined (non-periodic)"
                 except Exception as e:
                     return {"error": f"Integration failed for decaying function: {str(e)}"}
             else:  # Function does not decay

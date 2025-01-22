@@ -10,13 +10,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { CalculateModal } from "./CalculateModal";
+import { Signal } from "@/types/signal";
 
-interface Signal {
-  id: string;
-  function: string;
+interface ToolbarProps {
+  signals: Signal[];
 }
 
-export default function Toolbar({ signals }: { signals: Signal[] }) {
+const Toolbar = ({ signals }: ToolbarProps) => {
   const [domain, setDomain] = useState<"frequency" | "time">("time");
 
   return (
@@ -64,4 +64,6 @@ export default function Toolbar({ signals }: { signals: Signal[] }) {
       </div>
     </TooltipProvider>
   );
-}
+};
+
+export default Toolbar;

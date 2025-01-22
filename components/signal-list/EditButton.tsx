@@ -8,11 +8,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Input } from "../ui/input";
-
-interface Signal {
-  id: string;
-  function: string;
-}
+import { Signal } from "@/types/signal";
 
 const EditButton = ({
   signal,
@@ -37,7 +33,13 @@ const EditButton = ({
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <Input
-            value={editedSignal.function}
+            value={
+              typeof editedSignal.function === "object"
+                ? `${editedSignal.function.re}${
+                    editedSignal.function.im >= 0 ? "+" : ""
+                  }${editedSignal.function.im}i`
+                : editedSignal.function
+            }
             onChange={(e) =>
               setEditedSignal({ ...editedSignal, function: e.target.value })
             }

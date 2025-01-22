@@ -23,11 +23,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
-
-interface Signal {
-  id: string;
-  function: string;
-}
+import AvailabeFunctions from "../AvailabeFunctions";
+import { Signal } from "@/types/signal";
 
 function SortableSignal({
   signal,
@@ -55,7 +52,13 @@ function SortableSignal({
       <div {...attributes} {...listeners} className="cursor-move mr-2">
         <GripVertical size={20} />
       </div>
-      <span className="flex-grow">{signal.function}</span>
+      <span className="flex-grow">
+        {typeof signal.function === "object"
+          ? `${signal.function.re}${signal.function.im >= 0 ? "+" : ""}${
+              signal.function.im
+            }i`
+          : String(signal.function)}
+      </span>
       <EditButton signal={signal} onUpdate={onUpdate} />
       <DeleteButton signal={signal} onDelete={onDelete} />
     </li>
@@ -118,7 +121,8 @@ export default function SignalList({
   return (
     <div className="w-full md:w-1/3 p-4 bg-gray-50 overflow-y-auto">
       <h2 className="text-xl font-bold mb-4">Signal Inputs</h2>
-      <div className="flex mb-4">
+      <AvailabeFunctions />
+      <div className="flex mb-4 mt-4">
         <Input
           type="text"
           value={newSignal}

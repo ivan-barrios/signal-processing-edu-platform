@@ -45,9 +45,3 @@ export const gaussian = (t: number, alpha = 1) => Math.exp(-alpha * t ** 2);
  */
 export const sawtooth = (t: number, period = 1) =>
   2 * (t / period - Math.floor(t / period + 0.5));
-
-/**
- * Square Wave Function: Alternates between -1 and 1 with a given period.
- */
-export const square = (t: number, period = 1) =>
-  Math.floor((2 * t) / period) % 2 === 0 ? 1 : -1;

@@ -9,11 +9,7 @@ import {
   DialogFooter,
 } from "../ui/dialog";
 import { Trash2 } from "lucide-react";
-
-interface Signal {
-  id: string;
-  function: string;
-}
+import { Signal } from "@/types/signal";
 
 const DeleteButton = ({
   signal,
@@ -36,7 +32,15 @@ const DeleteButton = ({
           <DialogTitle>Delete Signal</DialogTitle>
         </DialogHeader>
         <div className="py-4">
-          <p>Are you sure you want to delete the signal: {signal.function}?</p>
+          <p>
+            Are you sure you want to delete the signal:{" "}
+            {typeof signal.function === "object"
+              ? `${signal.function.re}${signal.function.im >= 0 ? "+" : ""}${
+                  signal.function.im
+                }i`
+              : signal.function}
+            ?
+          </p>
           <p className="text-sm text-gray-500 mt-2">
             This action cannot be undone.
           </p>

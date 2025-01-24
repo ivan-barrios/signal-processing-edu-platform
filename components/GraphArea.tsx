@@ -34,7 +34,8 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions }) => {
       functions.forEach((func, index) => {
         try {
           const scope = { t };
-          point[`y${index}`] = math.evaluate(func, scope);
+          const result = math.evaluate(func, scope);
+          point[`y${index}`] = Number.isFinite(result) ? result : "NaN";
         } catch {
           setError(`Error evaluating function: ${func}`);
         }

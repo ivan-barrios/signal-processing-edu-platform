@@ -7,9 +7,11 @@ import { Signal } from "@/types/signal";
 
 export default function Home() {
   const [signals, setSignals] = useState<Signal[]>([]);
+  const [domain, setDomain] = useState<"frequency" | "time">("time");
+
   return (
     <main className="min-h-screen flex flex-col">
-      <Toolbar signals={signals} />
+      <Toolbar signals={signals} domain={domain} setDomain={setDomain} />
       <div className="flex-grow flex flex-col md:flex-row">
         <SignalList signals={signals} setSignals={setSignals} />
         <GraphArea
@@ -20,6 +22,7 @@ export default function Home() {
                 }i`
               : signal.function
           )}
+          domain={domain}
         />
       </div>
     </main>

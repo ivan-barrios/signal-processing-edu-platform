@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   LineChart,
   Line,
@@ -13,43 +13,67 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import math from "@/utils/customMath";
+import { calculateFourierTransform } from "@/utils/fourierTransform";
 
 interface GraphAreaProps {
   functions: string[];
+  domain: "time" | "frequency";
 }
 
-const GraphArea: React.FC<GraphAreaProps> = ({ functions }) => {
-  interface ChartDataPoint {
-    t: number;
-    [key: string]: number;
-  }
+interface ChartDataPoint {
+  t?: number;
+  omega?: number;
+  [key: `y${number}`]: number;
+}
 
+const GraphArea: React.FC<GraphAreaProps> = ({ functions, domain }) => {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const generateChartData = () => {
-    const tValues = Array.from({ length: 1000 }, (_, i) => -10 + i * 0.02);
-    const data = tValues.map((t) => {
-      const point: ChartDataPoint = { t };
-      functions.forEach((func, index) => {
-        try {
-          const scope = { t };
-          const result = math.evaluate(func, scope);
-          point[`y${index}`] = Number.isFinite(result) ? result : "NaN";
-        } catch {
-          setError(`Error evaluating function: ${func}`);
-        }
+  const generateChartData = useCallback(() => {
+    if (domain === "time") {
+      const tValues = Array.from({ length: 1000 }, (_, i) => -10 + i * 0.02);
+      const data = tValues.map((t) => {
+        const point: ChartDataPoint = { t };
+        functions.forEach((func, index) => {
+          try {
+            const scope = { t };
+            const result = math.evaluate(func, scope);
+            point[`y${index}`] = Number.isFinite(result) ? result : 0;
+          } catch {
+            setError(`Error evaluating function: ${func}`);
+            point[`y${index}`] = 0;
+          }
+        });
+        return point;
       });
-      return point;
-    });
-    setChartData(data);
-  };
+      setChartData(data);
+    } else {
+      const omegaValues = Array.from(
+        { length: 1000 },
+        (_, i) => -10 + i * 0.02
+      );
+      const data = omegaValues.map((omega) => {
+        const point: ChartDataPoint = { omega };
+        functions.forEach((func, index) => {
+          try {
+            const magnitude = calculateFourierTransform(func, omega);
+            point[`y${index}`] = Number.isFinite(magnitude) ? magnitude : 0;
+          } catch {
+            setError(`Error evaluating Fourier transform of: ${func}`);
+            point[`y${index}`] = 0;
+          }
+        });
+        return point;
+      });
+      setChartData(data);
+    }
+  }, [domain, functions]);
 
   useEffect(() => {
-    setError(null); //Clean errors
+    setError(null);
     generateChartData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [functions]);
+  }, [generateChartData]);
 
   const colors = [
     "#8884d8",
@@ -67,7 +91,10 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions }) => {
   return (
     <Card className="w-full md:w-2/3 h-[calc(100vh-4rem)] overflow-hidden">
       <CardHeader>
-        <CardTitle>Signal Visualization</CardTitle>
+        <CardTitle>
+          Signal Visualization - {domain === "time" ? "Time" : "Frequency"}{" "}
+          Domain
+        </CardTitle>
       </CardHeader>
       <CardContent className="h-[calc(100%-5rem)]">
         {error && <div className="text-red-500 mb-4">{error}</div>}
@@ -75,10 +102,21 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions }) => {
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
-              dataKey="t"
-              label={{ value: "t", position: "insideBottomRight", offset: -10 }}
+              dataKey={domain === "time" ? "t" : "omega"}
+              label={{
+                value: domain === "time" ? "t" : "ω",
+                position: "bottom",
+                offset: -5,
+              }}
             />
-            <YAxis />
+            <YAxis
+              label={{
+                value: domain === "time" ? "Amplitude" : "|X(f)|",
+                angle: -90,
+                position: "insideLeft",
+                offset: 15,
+              }}
+            />
             <Tooltip />
             <Legend />
             {functions.map((func, index) => (

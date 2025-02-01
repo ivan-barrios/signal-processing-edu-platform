@@ -7,6 +7,7 @@ import {
   ramp,
   gaussian,
   sawtooth,
+  diracDeltaGaussian,
 } from "@/constants/CommonSignals";
 
 // Create a custom math.js instance
@@ -21,6 +22,7 @@ math.import({
   ramp: ramp,
   gaussian: gaussian,
   sawtooth: sawtooth,
+  diracDeltaGaussian: diracDeltaGaussian,
 });
 
 // Export the custom math instance

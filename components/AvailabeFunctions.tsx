@@ -21,7 +21,7 @@ const AvailabeFunctions = () => {
   return (
     <Dialog open={showFunctionInfo} onOpenChange={setShowFunctionInfo}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="lg">
+        <Button variant="outline" size="lg" className="w-full">
           <Info className="h-4 w-4 mr-2" />
           Defined Functions
         </Button>

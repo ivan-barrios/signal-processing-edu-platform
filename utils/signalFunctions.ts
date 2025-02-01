@@ -13,6 +13,7 @@ export const signalFunctions = [
     { name: "gaussian(t)", description: "Gaussian function" },
     { name: "sawtooth(t)", description: "Sawtooth function" },
     { name: "square(t)", description: "Square function" },
+    { name: "diracDeltaGaussian(t)", description: "Aproximación gaussiana de la delta de Dirac" },
   ]
   
   export const mathConstants = [

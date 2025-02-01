@@ -22,7 +22,7 @@ interface GraphAreaProps {
 
 interface ChartDataPoint {
   t?: number;
-  omega?: number;
+  frequency?: number;
   [key: `y${number}`]: number;
 }
 
@@ -49,15 +49,15 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions, domain }) => {
       });
       setChartData(data);
     } else {
-      const omegaValues = Array.from(
+      const frequencyValues = Array.from(
         { length: 1000 },
         (_, i) => -10 + i * 0.02
       );
-      const data = omegaValues.map((omega) => {
-        const point: ChartDataPoint = { omega };
+      const data = frequencyValues.map((frequency) => {
+        const point: ChartDataPoint = { frequency };
         functions.forEach((func, index) => {
           try {
-            const magnitude = calculateFourierTransform(func, omega);
+            const magnitude = calculateFourierTransform(func, frequency);
             point[`y${index}`] = Number.isFinite(magnitude) ? magnitude : 0;
           } catch {
             setError(`Error evaluating Fourier transform of: ${func}`);
@@ -89,22 +89,22 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions, domain }) => {
   ];
 
   return (
-    <Card className="w-full md:w-2/3 h-[calc(100vh-4rem)] overflow-hidden">
+    <Card className="w-full h-[calc(100vh-4rem)] overflow-hidden flex flex-col justify-center items-center">
       <CardHeader>
         <CardTitle>
           Signal Visualization - {domain === "time" ? "Time" : "Frequency"}{" "}
           Domain
         </CardTitle>
       </CardHeader>
-      <CardContent className="h-[calc(100%-5rem)]">
+      <CardContent className="h-[calc(100%-5rem)] w-full">
         {error && <div className="text-red-500 mb-4">{error}</div>}
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
-              dataKey={domain === "time" ? "t" : "omega"}
+              dataKey={domain === "time" ? "t" : "frequency"}
               label={{
-                value: domain === "time" ? "t" : "ω",
+                value: domain === "time" ? "t" : "f",
                 position: "bottom",
                 offset: -5,
               }}

@@ -45,3 +45,15 @@ export const gaussian = (t: number, alpha = 1) => Math.exp(-alpha * t ** 2);
  */
 export const sawtooth = (t: number, period = 1) =>
   2 * (t / period - Math.floor(t / period + 0.5));
+
+/**
+ * Aproximación a la delta de Dirac usando una gaussiana.
+ * La constante 1/(sigma*sqrt(2*pi)) normaliza la gaussiana,
+ * de modo que su integral sea 1.
+ */
+export const diracDeltaGaussian = (t: number, sigma = 0.01) => {
+  return (
+    (1 / (sigma * Math.sqrt(2 * Math.PI))) *
+    Math.exp(-(t * t) / (2 * sigma * sigma))
+  );
+};

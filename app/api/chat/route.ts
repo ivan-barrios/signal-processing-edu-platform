@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         {
           role: "system",
           content:
-            "You are an AI assistant specialized in signal processing. Provide clear and concise answers to questions about signal processing concepts, techniques, and applications.",
+            "You are an AI assistant specialized in signal processing. Provide clear and concise answers to questions about signal processing concepts, techniques, and applications. You will speak the same language the user speak. Also, you will write the answers that contains functions with clarity.",
         },
         ...messages,
       ],

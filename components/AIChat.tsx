@@ -34,6 +34,10 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    console.log(messages);
+  }, [messages]);
+
   if (!mounted) return null;
 
   return (
@@ -49,7 +53,7 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-white rounded-lg shadow-xl flex flex-col h-[80vh] max-h-[600px] w-[90vw] max-w-[500px]"
+              className="bg-white rounded-lg shadow-xl flex flex-col h-[80vh] max-h-[1000px] w-full p-2"
             >
               <div className="flex items-center justify-between p-4 border-b">
                 <h2 className="text-lg font-semibold">AI Assistant</h2>

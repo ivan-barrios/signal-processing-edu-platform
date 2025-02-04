@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, useRef, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -31,13 +31,12 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Ref to the dummy element at the end of scrollable messages
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    console.log(messages);
-  }, [messages]);
 
   // When a new message from the assistant is received, clear the loading state.
   useEffect(() => {
@@ -48,6 +47,15 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
       }
     }
   }, [messages]);
+
+  // Auto-scroll to bottom when the chat opens or a new message is added.
+  useEffect(() => {
+    setTimeout(() => {
+      if (isOpen && messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
+  }, [isOpen, messages]);
 
   // Wrap the handleSubmit so we can set the loading state.
   const handleChatSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -104,6 +112,9 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
                     </span>
                   </div>
                 )}
+
+                {/* Dummy div to scroll into view */}
+                <div ref={messagesEndRef} />
               </ScrollArea>
               <form
                 onSubmit={handleChatSubmit}

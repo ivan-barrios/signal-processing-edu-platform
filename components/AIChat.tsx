@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Send } from "lucide-react";
+import { Send, Loader } from "lucide-react";
 import { useChat } from "ai/react";
 import { motion, AnimatePresence } from "framer-motion";
 import Markdown from "react-markdown";
@@ -29,6 +29,7 @@ interface ChatMessage {
 export default function AIChat({ isOpen, onClose }: AIChatProps) {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [mounted, setMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -37,6 +38,23 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
   useEffect(() => {
     console.log(messages);
   }, [messages]);
+
+  // When a new message from the assistant is received, clear the loading state.
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === "assistant") {
+        setIsLoading(false);
+      }
+    }
+  }, [messages]);
+
+  // Wrap the handleSubmit so we can set the loading state.
+  const handleChatSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    await handleSubmit(e);
+  };
 
   if (!mounted) return null;
 
@@ -51,7 +69,6 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
               className="bg-white rounded-lg shadow-xl flex flex-col w-full h-full md:h-[80vh] md:max-h-[1000px] p-2"
             >
@@ -77,8 +94,21 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
                     </span>
                   </div>
                 ))}
+
+                {/* Loading indicator for when the AI response is pending */}
+                {isLoading && (
+                  <div className="mb-4 text-left">
+                    <span className="p-2 rounded-lg bg-gray-100 flex items-center">
+                      <Loader className="mr-2 h-4 w-4 animate-spin" />
+                      <span>AI is typing...</span>
+                    </span>
+                  </div>
+                )}
               </ScrollArea>
-              <form onSubmit={handleSubmit} className="p-4 border-t flex gap-4">
+              <form
+                onSubmit={handleChatSubmit}
+                className="p-4 border-t flex gap-4"
+              >
                 <Input
                   value={input}
                   onChange={handleInputChange}

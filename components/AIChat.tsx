@@ -44,7 +44,7 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
     <AnimatePresence>
       {isOpen && (
         <Dialog open={isOpen} onOpenChange={onClose}>
-          <DialogContent className="p-0 overflow-hidden">
+          <DialogContent className="p-0 overflow-hidden max-md:w-screen max-md:h-screen">
             <DialogHeader className="hidden">
               <DialogTitle>AI Assistant</DialogTitle>
             </DialogHeader>
@@ -53,7 +53,7 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-white rounded-lg shadow-xl flex flex-col h-[80vh] max-h-[1000px] w-full p-2"
+              className="bg-white rounded-lg shadow-xl flex flex-col w-full h-full md:h-[80vh] md:max-h-[1000px] p-2"
             >
               <div className="flex items-center justify-between p-4 border-b">
                 <h2 className="text-lg font-semibold">AI Assistant</h2>

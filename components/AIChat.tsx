@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, FormEvent } from "react";
+import React, { useEffect, useRef, useState, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -31,12 +31,37 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Ref to the dummy element at the end of scrollable messages
+  // Determine if the device is mobile based on its width
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  // Ref to the dummy element at the end of the scrollable messages
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Ref for the input element.
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Update the CSS variable --vh to fix Mobile Safari issues with viewport units.
+  useEffect(() => {
+    const setVhProperty = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    setVhProperty();
+    window.addEventListener("resize", setVhProperty);
+
+    return () => window.removeEventListener("resize", setVhProperty);
+  }, []);
+
+  // Prevent auto focus from showing the keyboard on mobile.
+  // Radix UI's DialogContent provides `onOpenAutoFocus`. Calling `event.preventDefault()`
+  // disables the built-in auto-focusing behavior.
+  // NOTE: Ensure no other logic (or autoFocus attribute) is triggering focus.
+  // This way the input remains unfocused on opening.
 
   // When a new message from the assistant is received, clear the loading state.
   useEffect(() => {
@@ -48,7 +73,7 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
     }
   }, [messages]);
 
-  // Auto-scroll to bottom when the chat opens or a new message is added.
+  // Auto-scroll to the bottom when the chat opens or a new message is added.
   useEffect(() => {
     setTimeout(() => {
       if (isOpen && messagesEndRef.current) {
@@ -70,7 +95,13 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
     <AnimatePresence>
       {isOpen && (
         <Dialog open={isOpen} onOpenChange={onClose}>
-          <DialogContent className="p-0 overflow-hidden max-md:w-screen max-md:h-screen">
+          <DialogContent
+            // Prevent auto-focusing on open
+            onOpenAutoFocus={(event) => event.preventDefault()}
+            // For desktop, fixed size is applied; on mobile, we use the CSS variable for height.
+            className="p-0 overflow-hidden w-screen md:rounded-lg md:w-[600px] md:h-[80vh] md:mx-auto"
+            style={isMobile ? { height: "calc(var(--vh, 1vh) * 100)" } : {}}
+          >
             <DialogHeader className="hidden">
               <DialogTitle>AI Assistant</DialogTitle>
             </DialogHeader>
@@ -83,7 +114,7 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
               <div className="flex items-center justify-between p-4 border-b">
                 <h2 className="text-lg font-semibold">AI Assistant</h2>
               </div>
-              <ScrollArea className="flex-grow p-4">
+              <ScrollArea className="flex-grow p-4 pb-16">
                 {messages.map((message: ChatMessage, index: number) => (
                   <div
                     key={index}
@@ -118,9 +149,11 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
               </ScrollArea>
               <form
                 onSubmit={handleChatSubmit}
-                className="p-4 border-t flex gap-4"
+                className="sticky bottom-0 bg-white p-4 border-t flex gap-4"
+                style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
               >
                 <Input
+                  ref={inputRef}
                   value={input}
                   onChange={handleInputChange}
                   placeholder="Ask about signal processing..."

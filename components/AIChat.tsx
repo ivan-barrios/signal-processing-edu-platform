@@ -31,8 +31,13 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
   const [mounted, setMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Determine if the device is mobile based on its width
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  // Updated: Initialize isMobile safely for SSR without using window directly.
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
 
   // Ref to the dummy element at the end of the scrollable messages
   const messagesEndRef = useRef<HTMLDivElement>(null);

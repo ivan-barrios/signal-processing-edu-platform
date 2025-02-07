@@ -87,9 +87,14 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
     }, 100);
   }, [isOpen, messages]);
 
-  // Wrap the handleSubmit so we can set the loading state.
+  // Updated: Do nothing if the input is empty.
   const handleChatSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (input.trim() === "") {
+      return;
+    }
+
     setIsLoading(true);
     await handleSubmit(e);
   };
@@ -114,12 +119,18 @@ export default function AIChat({ isOpen, onClose }: AIChatProps) {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-white rounded-lg shadow-xl flex flex-col w-full h-full md:h-[80vh] md:max-h-[1000px] p-2"
+              className="bg-white rounded-lg shadow-xl flex flex-col w-full h-full min-h-0 md:h-[80vh] md:max-h-[1000px] p-2"
             >
               <div className="flex items-center justify-between p-4 border-b">
                 <h2 className="text-lg font-semibold">AI Assistant</h2>
               </div>
-              <ScrollArea className="flex-grow p-4 pb-16">
+              <ScrollArea
+                className="flex-grow p-4 pb-16 overflow-y-auto"
+                style={{
+                  WebkitOverflowScrolling: "touch",
+                  touchAction: "pan-y",
+                }}
+              >
                 {messages.map((message: ChatMessage, index: number) => (
                   <div
                     key={index}

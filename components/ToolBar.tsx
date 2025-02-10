@@ -8,6 +8,15 @@ import {
 import { CalculateModal } from "./CalculateModal";
 import { Signal } from "@/types/signal";
 import { motion } from "framer-motion";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Button } from "./ui/button";
+import { Filter } from "lucide-react";
+import { useState } from "react";
 
 interface ToolbarProps {
   signals: Signal[];
@@ -16,12 +25,40 @@ interface ToolbarProps {
 }
 
 const Toolbar = ({ signals, domain, setDomain }: ToolbarProps) => {
+  const [activeFilter, setActiveFilter] = useState<
+    "none" | "lowpass" | "highpass"
+  >("none");
+
   return (
     <TooltipProvider>
       <div className="p-2 bg-gray-100 flex flex-wrap gap-2 items-center justify-between w-full">
         <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
           <DomainToggle domain={domain} setDomain={setDomain} />
         </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`p-2 ${
+                activeFilter !== "none" ? "bg-blue-100 text-blue-600" : ""
+              }`}
+            >
+              <Filter className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => setActiveFilter("none")}>
+              No Filter
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setActiveFilter("lowpass")}>
+              Low-Pass Filter
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setActiveFilter("highpass")}>
+              High-Pass Filter
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <div className="flex flex-wrap gap-4 items-center justify-center md:justify-start">
           <Tooltip>
             <TooltipTrigger asChild>

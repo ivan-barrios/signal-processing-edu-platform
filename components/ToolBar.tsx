@@ -16,7 +16,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { Filter } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ToolbarProps {
   signals: Signal[];
@@ -28,6 +28,24 @@ const Toolbar = ({ signals, domain, setDomain }: ToolbarProps) => {
   const [activeFilter, setActiveFilter] = useState<
     "none" | "lowpass" | "highpass"
   >("none");
+
+  // New function to graph filtered signals
+  const graphFilteredSignals = () => {
+    if (activeFilter === "lowpass") {
+      // Logic for lowpass filtering
+      console.log("Graphing lowpass filtered signals");
+      // Add your filtering logic here
+    } else if (activeFilter === "highpass") {
+      // Logic for highpass filtering
+      console.log("Graphing highpass filtered signals");
+      // Add your filtering logic here
+    }
+  };
+
+  // Effect to graph signals when activeFilter changes
+  useEffect(() => {
+    graphFilteredSignals();
+  }, [activeFilter]);
 
   return (
     <TooltipProvider>

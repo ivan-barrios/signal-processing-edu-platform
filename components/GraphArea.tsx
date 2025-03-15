@@ -14,6 +14,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import math from "@/utils/customMath";
 import { calculateFourierTransform } from "@/utils/fourierTransform";
+import { Input } from "./ui/input";
 
 interface GraphAreaProps {
   functions: string[];
@@ -29,10 +30,16 @@ interface ChartDataPoint {
 const GraphArea: React.FC<GraphAreaProps> = ({ functions, domain }) => {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [xLim, setXLim] = useState<number>(10);
+  const [yLim, setYLim] = useState<number>(10);
 
   const generateChartData = useCallback(() => {
     if (domain === "time") {
-      const tValues = Array.from({ length: 1000 }, (_, i) => -10 + i * 0.02);
+      const tValues = Array.from(
+        { length: 1000 },
+        (_, i) => -xLim + (i * (2 * xLim)) / 1000
+      ); // Spread across [-xLim, +xLim]
+
       const data = tValues.map((t) => {
         const point: ChartDataPoint = { t };
         functions.forEach((func, index) => {
@@ -51,8 +58,9 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions, domain }) => {
     } else {
       const frequencyValues = Array.from(
         { length: 1000 },
-        (_, i) => -10 + i * 0.02
-      );
+        (_, i) => -xLim + (i * (2 * xLim)) / 1000
+      ); // Spread across [-xLim, +xLim]
+
       const data = frequencyValues.map((frequency) => {
         const point: ChartDataPoint = { frequency };
         functions.forEach((func, index) => {
@@ -68,7 +76,7 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions, domain }) => {
       });
       setChartData(data);
     }
-  }, [domain, functions]);
+  }, [domain, functions, xLim]);
 
   useEffect(() => {
     setError(null);
@@ -90,19 +98,41 @@ const GraphArea: React.FC<GraphAreaProps> = ({ functions, domain }) => {
 
   return (
     <Card className="w-full h-[calc(100vh-4rem)] overflow-hidden flex flex-col justify-center items-center">
-      <CardHeader>
+      <CardHeader className="flex flex-col items-center">
         <CardTitle>
           Signal Visualization - {domain === "time" ? "Time" : "Frequency"}{" "}
           Domain
         </CardTitle>
+        <div className="flex mb-4 mt-4">
+          <Input
+            type="number"
+            value={xLim}
+            onChange={(e) =>
+              Number(e.target.value) > 0
+                ? setXLim(Number(e.target.value))
+                : setXLim(0.01)
+            }
+            placeholder="Enter x axis limits"
+            className="flex-grow mr-2"
+          />
+          <Input
+            type="number"
+            value={yLim}
+            onChange={(e) => setYLim(Number(e.target.value))}
+            placeholder="Enter y axis limits"
+            className="flex-grow mr-2"
+          />
+        </div>
       </CardHeader>
       <CardContent className="h-[calc(100%-5rem)] w-full">
         {error && <div className="text-red-500 mb-4">{error}</div>}
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
+
             <XAxis
               dataKey={domain === "time" ? "t" : "frequency"}
+              domain={[-xLim, xLim]} // Set X-axis limits dynamically
               label={{
                 value: domain === "time" ? "t" : "f",
                 position: "bottom",

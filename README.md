@@ -75,3 +75,27 @@ Contributions are welcome! Feel free to submit a pull request or open an issue i
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+Comments from Santiago Rodriguez (IPS Teacher):
+Te paso algunos comentarios básicos:
+
+Comentarios sobre https://signal-processing-edu-platform.vercel.app/
+
+Pros:
+
+1. Permite generar funciones
+
+Adds:
+
+1. Podría agregarse el control sobre los ejes. Lo que en octave sería "xlim" "ylim".
+   Esto permitiría mostrar el gráfico en los intervalos deseados por el usuario.
+   Por el momento el eje "x" parece fijo entre -10 y 10.
+   Esto es muy importante si por ejemplo dibujo un triángulo centrado en 10...no se vería completamente así como está ahora.
+
+2. En línea con lo anterior, podría ajustarse la altura a mostrar no al "máximo" de la función
+   como pareciera ahora, sino que los "ylim" por defecto podrían estar a 1.2 del máximo y 1.2 del minimo.
+   Como para que quede un espacio entre el fin del gráfico y la señal.
+
+3. No pude lograr que funcionen los cálculos de pot, valor medio y energía. Dice "loading" pero no veo que termine.
+
+4. Podría agregarse al lado de cada señal la opción de que sea una secuencia. Esto implicaría graficar la señal solamente en puntos para instantes enteros de "t". Obtener algo como el comando "stem" de octave.
